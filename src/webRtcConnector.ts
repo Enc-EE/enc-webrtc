@@ -18,9 +18,11 @@ export class WebRtcConnector {
 
     public createListener = (): Promise<string> => {
         return new Promise(async (resolve, reject) => {
-            var response = <CreateResponse>JSON.parse(await this.http.post(this.sigServeUrl + "/api/v1/create"));
-            this.serverId = response.id;
-            resolve(response.id);
+            if (!this.serverId) {
+                var response = <CreateResponse>JSON.parse(await this.http.post(this.sigServeUrl + "/api/v1/create"));
+                this.serverId = response.id;
+            }
+            resolve(this.serverId);
         });
     }
 

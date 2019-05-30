@@ -29,7 +29,11 @@ module.exports = {
                 use: [
                     'file-loader'
                 ]
-            }
+            },
+            {
+                test: /\template.html$/i,
+                use: 'raw-loader',
+            },
         ]
     },
     resolve: {

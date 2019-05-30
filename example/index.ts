@@ -1,46 +1,44 @@
 import { WebRtcConnector } from "../src/webRtcConnector";
+import { Chat } from "./chat";
 
 document.addEventListener('DOMContentLoaded', main, false);
+var connector: WebRtcConnector;
+var currentId = 0;
 
 function main() {
-    console.log(window.location.href);
+    connector = new WebRtcConnector("http://localhost:1337");
+    connector.receivedNegotiatedConnection.addEventListener((rtc) => {
+        var dataChannel = rtc.createDataChannel("data");
+        createChat(dataChannel);
+    });
+    (document.getElementById("startListenBtn") as HTMLButtonElement).addEventListener("click", startListen);
+    (document.getElementById("stopListenBtn") as HTMLButtonElement).addEventListener("click", stopListen);
+    (document.getElementById("connectBtn") as HTMLButtonElement).addEventListener("click", join);
+}
 
-    if (window.location.href.indexOf("client1") !== -1) {
-        console.log("client1");
-        let connector = new WebRtcConnector("http://localhost:1337");
-        (<any>document).c = connector;
-        connector.createListener()
-            .then((client1Id) => {
-                console.log(client1Id);
-                connector.receivedNegotiatedConnection.addEventListener(
-                    (rtc) => {
-                        console.log("got rtc");
-                        (<any>document).rtc = rtc
-                        var dataChannel = rtc.createDataChannel("data");
-                        (<any>document).dc = dataChannel;
-                        dataChannel.addEventListener("message", (message) => {
-                            console.log(message);
-                        });
-                    })
-                connector.startListener();
-            })
+async function startListen() {
+    var client1Id = await connector.createListener();
+    (document.getElementById("client1Id") as HTMLLabelElement).textContent = client1Id;
+    connector.startListener();
+}
+
+function stopListen() {
+    connector.stopListener();
+}
+
+async function join() {
+    var client2 = (document.getElementById("client2Id") as HTMLInputElement).value;
+    if (client2) {
+        var rtc = await connector.connect(client2)
+        rtc.addEventListener("datachannel", (dc) => {
+            createChat(dc.channel);
+        });
+    } else {
+        console.log("id missing");
     }
-    else if (window.location.href.indexOf("client2") !== -1) {
-        console.log("client2");
-        var id = window.location.href.split("#")[1].split(":")[1];
-        console.log(id);
-        let connector = new WebRtcConnector("http://localhost:1337");
-        (<any>document).c = connector;
-        connector.connect(id)
-            .then((rtc) => {
-                console.log("got rtc");
-                (<any>document).rtc = rtc
-                rtc.addEventListener("datachannel", (dc) => {
-                    (<any>document).dc = dc.channel;
-                    dc.channel.addEventListener("message", (message) => {
-                        console.log(message);
-                    });
-                })
-            });
-    }
+}
+
+function createChat(dataChannel: RTCDataChannel) {
+    new Chat(currentId, dataChannel);
+    currentId++;
 }
