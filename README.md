@@ -66,6 +66,7 @@ class MyWebRtcHandler {
 ## References
 
 * [enc-webrtc](https://github.com/Enc-EE/enc-webrtc)
+* [enc-webrtc Connection Workflow Doc](https://github.com/Enc-EE/enc-webrtc/blob/master/src/README.md)
 * [enc-webrtc (npmjs.com)](https://www.npmjs.com/package/enc-webrtc)
 * [enc-webrtc-signaling](https://github.com/Enc-EE/enc-webrtc-signaling)
 * [enc-webrtc-example](https://github.com/Enc-EE/enc-webrtc-example)
