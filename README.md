@@ -3,6 +3,8 @@
 This library is designed to create a Web RTC connection with a `RTCPeerConnection` on both clients.
 It encapsulates signaling and makes Web RTC easy set up.
 
+You can find an example at: [https://enc-ee.github.io/enc-webrtc-example/build/](https://enc-ee.github.io/enc-webrtc-example/build/)
+
 ## Installation
 
 `npm install --save enc-webrtc`
